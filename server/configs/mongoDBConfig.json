@@ -1,0 +1,9 @@
+{
+  "development": {
+    "host": "localhost",
+    "port": 27017,
+    "dbName": "test_dv_dev"
+  },
+  "test": {},
+  "production": {}
+}
