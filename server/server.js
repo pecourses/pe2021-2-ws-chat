@@ -1,8 +1,8 @@
 const http = require('http');
 const { Server } = require('socket.io');
 const app = require('./app');
+const { SOCKET_EVENTS } = require('./constants');
 const { Message } = require('./models');
-const { all } = require('./router');
 
 const PORT = process.env.PORT ?? 5000;
 
@@ -20,11 +20,6 @@ const io = new Server(httpServer, {
   cors,
 });
 
-const SOCKET_EVENTS = {
-  NEW_MESSAGE: 'NEW_MESSAGE',
-  NEW_MESSAGE_ERROR: 'NEW_MESSAGE_ERROR',
-};
-
 io.on('connection', socket => {
   socket.on(SOCKET_EVENTS.NEW_MESSAGE, async message => {
     try {
@@ -35,6 +30,10 @@ io.on('connection', socket => {
       // отправка сообщения себе, что произошла ошибка
       socket.emit(SOCKET_EVENTS.NEW_MESSAGE_ERROR, err);
     }
+  });
+
+  socket.on('disconnect', () => {
+    console.log('user is disconnected');
   });
 });
 
