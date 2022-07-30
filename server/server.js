@@ -21,6 +21,7 @@ const io = new Server(httpServer, {
 });
 
 io.on('connection', socket => {
+  // Обработка кейса "пришло новое сообщение"
   socket.on(SOCKET_EVENTS.NEW_MESSAGE, async message => {
     try {
       const createdMessage = await Message.create(message);
@@ -32,10 +33,25 @@ io.on('connection', socket => {
     }
   });
 
+  socket.emit('USER_WELLCOMING', 'Wellcome to conversation!');
+
+  socket.broadcast.emit(
+    'NEW_USER_CONNECTION',
+    'Test Testivich is joined to conversation'
+  );
+
   socket.on('disconnect', () => {
     console.log('user is disconnected');
+
+    socket.broadcast.emit(
+      'USER_LEAVING_CONNECTION',
+      'Test Testivich is left to conversation'
+    );
   });
 });
+
+// Отправлять уже существующим участникам чата уведомление о том, что к беседе присоединился Test Testovich
+// Отправлять остающится участникам чата уведомление о том, что Test Testovich покинул беседу
 
 // // подписка на событие
 // io.on('событие', () => { })
@@ -45,4 +61,4 @@ io.on('connection', socket => {
 
 // socket.emit - to self
 // io.emit - to all
-// socket.broadcast - to all except self
+// socket.broadcast.emit - to all except self
