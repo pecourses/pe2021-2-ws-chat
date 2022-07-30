@@ -26,10 +26,7 @@ export function * createMessageSaga (action) {
 
   yield put(createMessageRequest());
   try {
-    const {
-      data: { data: messages },
-    } = yield API.createMessage(newMessage);
-    yield put(createMessageSuccess(messages));
+    yield API.createMessage(newMessage);
   } catch (err) {
     yield put(createMessageError(err));
   }
